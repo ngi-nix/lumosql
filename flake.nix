@@ -6,6 +6,7 @@
 
   outputs = { self, nixpkgs, lumosql-src }:
     let
+      version = builtins.substring 0 8 lumosql-src.lastModifiedDate;
       supportedSystems = [ "x86_64-linux" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ self.overlay ]; });
@@ -16,7 +17,7 @@
       overlay = final: prev: {
 
         lumosql = with final; stdenv.mkDerivation rec {
-          name = "lumosql";
+          name = "lumosql-${version}";
 
           src = lumosql-src;
 
@@ -67,7 +68,7 @@
         benchmark =
           with nixpkgsFor.${system};
           stdenv.mkDerivation {
-            name = "lumosql-benchmark";
+            name = "lumosql-benchmark-${version}";
 
             inherit (lumosql) src patches lmdbVersion;
 
