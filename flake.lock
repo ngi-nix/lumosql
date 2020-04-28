@@ -1,0 +1,47 @@
+{
+  "nodes": {
+    "lumosql-src": {
+      "flake": false,
+      "info": {
+        "lastModified": 1583456315,
+        "narHash": "sha256-eGIYS3LWVP2ujmh4+2ZeKvCtVbddCYUxTUYQa09ngZ4="
+      },
+      "locked": {
+        "owner": "LumoSQL",
+        "repo": "LumoSQL",
+        "rev": "0184da5cd903bef106b8b8bdcafae7b39c80206a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LumoSQL",
+        "repo": "LumoSQL",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "info": {
+        "lastModified": 1588027483,
+        "narHash": "sha256-DcNFRegA72g1fmVWp+kFxxD4JuAwwM7XjYy0ebRa56U="
+      },
+      "locked": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "2faa76db27c4a8045d050d9b390dbb2249b0f3c0",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-20.03",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "lumosql-src": "lumosql-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 5
+}
