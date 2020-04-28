@@ -44,6 +44,7 @@
         nix-lumosql = (prev.nix.override {
           sqlite = final.lumosql;
         }).overrideDerivation (_: {
+          # FIXME: test suite currently fails with a "malformed database image" error.
           doInstallCheck = false;
         });
 
@@ -59,8 +60,7 @@
       defaultPackage = forAllSystems (system: self.packages.${system}.lumosql);
 
       checks = forAllSystems (system: {
-        build = self.defaultPackage.${system};
-        nix-lumosqlite = self.defaultPackage.${system};
+        inherit (self.packages.${system}) lumosql nix-lumosql;
       });
 
     };
