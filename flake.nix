@@ -8,6 +8,7 @@
     let
       supportedSystems = [ "x86_64-linux" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ self.overlay ]; });
     in
 
     {
@@ -52,15 +53,37 @@
 
       packages = forAllSystems (system:
         {
-          inherit
-            (import nixpkgs { inherit system; overlays = [ self.overlay ]; })
-            lumosql nix-lumosql;
+          inherit (nixpkgsFor.${system}) lumosql nix-lumosql;
         });
 
       defaultPackage = forAllSystems (system: self.packages.${system}.lumosql);
 
       checks = forAllSystems (system: {
         inherit (self.packages.${system}) lumosql nix-lumosql;
+
+        # Run the benchmark. We do this in a separate derivation
+        # because it's inherently not binary-reproducible and we don't
+        # want to taint the the lumosql package with that.
+        benchmark =
+          with nixpkgsFor.${system};
+          stdenv.mkDerivation {
+            name = "lumosql-benchmark";
+
+            inherit (lumosql) src patches lmdbVersion;
+
+            buildInputs = [ tcl ];
+
+            buildPhase = ''
+              ln -s ${lumosql}/bin/sqlite3 sqlite3
+              make LMDB_$lmdbVersion.html
+            '';
+
+            installPhase = ''
+              mkdir -p $out/nix-support
+              cp LMDB_$lmdbVersion.html $out/
+              echo "doc benchmark $out/LMDB_$lmdbVersion.html" >> $out/nix-support/hydra-build-products
+            '';
+          };
       });
 
     };

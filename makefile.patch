@@ -1,6 +1,6 @@
 diff -ru -x '*~' src-orig/Makefile src-patched/Makefile
 --- src-orig/Makefile	1970-01-01 01:00:01.000000000 +0100
-+++ src-patched/Makefile	2020-04-28 11:12:17.545530381 +0200
++++ src-patched/Makefile	2020-04-28 12:36:28.058406028 +0200
 @@ -50,22 +50,12 @@
  	# versions of the SQLite source code results in a change to the
  	# modification time for the src-SQLite directory, which in turn results
@@ -24,3 +24,13 @@ diff -ru -x '*~' src-orig/Makefile src-patched/Makefile
  	rm -rf $@ && mkdir $@
  	cp LICENSES/Apache-2.0.txt $@/LICENSE
  	cd $@ && ../lmdb-backend/configure \
+@@ -82,8 +72,7 @@
+ 	make -C $@
+ 	$@/sqlite3 --version
+ 
+-%.html: bld-%
+-	ln -s $</sqlite3
++%.html:
+ 	tclsh tool/speedtest.tcl | tee $@
+ 	rm -f sqlite3 test*.sql clear.sql 2kinit.sql s2k.db s2k.db-lock
+ 
