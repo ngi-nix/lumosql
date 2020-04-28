@@ -31,10 +31,8 @@
           buildInputs = [ tcl ];
 
           postUnpack = ''
-            pwd
             unpackFile $lmdbSrc
             mv lmdb-* source/src-lmdb
-            ls -l source
           '';
 
           buildPhase = "make bld-LMDB_$lmdbVersion";
@@ -42,15 +40,27 @@
           installPhase = "cd bld-LMDB* && make install prefix=${placeholder "out"} HAVE_TCL=";
         };
 
+        # Build Nix against LumoSQL.
+        nix-lumosql = (prev.nix.override {
+          sqlite = final.lumosql;
+        }).overrideDerivation (_: {
+          doInstallCheck = false;
+        });
+
       };
 
-      defaultPackage = forAllSystems (system: (import nixpkgs {
-        inherit system;
-        overlays = [ self.overlay ];
-      }).lumosql);
+      packages = forAllSystems (system:
+        {
+          inherit
+            (import nixpkgs { inherit system; overlays = [ self.overlay ]; })
+            lumosql nix-lumosql;
+        });
+
+      defaultPackage = forAllSystems (system: self.packages.${system}.lumosql);
 
       checks = forAllSystems (system: {
         build = self.defaultPackage.${system};
+        nix-lumosqlite = self.defaultPackage.${system};
       });
 
     };
