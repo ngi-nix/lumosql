@@ -40,6 +40,11 @@
           buildPhase = "make bld-LMDB_$lmdbVersion";
 
           installPhase = "cd bld-LMDB* && make install prefix=${placeholder "out"} HAVE_TCL=";
+
+          meta = {
+            homepage = "https://github.com/LumoSQL/LumoSQL";
+            description = "A combination of two embedded data storage C language libraries: SQLite and LMDB";
+          };
         };
 
         # Build Nix against LumoSQL.
